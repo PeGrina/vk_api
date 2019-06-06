@@ -19,8 +19,8 @@ code :
   $btn1 = [["command"=>"btn1"],"BTN1","green"];
  </pre>
  First element this payload of button. Second element this text of button. Third element this color of button.
+ Colors - 
  <pre>
-  Colors - 
    Green
    Red
    Blue
