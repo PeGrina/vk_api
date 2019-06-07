@@ -38,7 +38,7 @@ class vk_api{
      * @return string
      */
     public function tokenLink($response_type = "token",$display = "page",$fields = 140492255){
-            return "https://oauth.vk.com/authorize?client_id=2685278&scope=140492255&redirect_uri=https://api.vk.com/blank.html&display=".$display."&response_type=".$response_type."&revoke=1"
+            return "https://oauth.vk.com/authorize?client_id=2685278&scope=140492255&redirect_uri=https://api.vk.com/blank.html&display=".$display."&response_type=".$response_type."&revoke=1";
     }
     /**
      * Получить сообщение по его идентефикатору
@@ -81,7 +81,7 @@ class vk_api{
      * @param string $name_case Падеж для имен и фамилий пользователей
      * @return mixed|null
      */
-    public function editChat($chat_id,$name_case='Nom'){
+    public function getChat($chat_id,$name_case='Nom'){
         return $this->request('messages.getChat',array('chat_id'=>$chat_id,'fields'=>$this->fields,'name_case'=>$name_case));
     }
     /**
@@ -103,10 +103,10 @@ class vk_api{
     /**
      * Создать чат
      * @param string $title Название чата
-     * @param array $user_ids Пользователи чата
+     * @param string $user_ids Пользователи чата
      * @return mixed|null
      */
-    public function createChat($title, $user_ids=array()){
+    public function createChat($title, $user_ids=''){
         return $this->request('messages.createChat',array('title'=>$title,'user_ids'=>$user_ids),true);
     }
     public function sendMessage($sendID,$message){
