@@ -17,6 +17,34 @@ class vk_api{
         $this->v = $v;
     }
     /**
+     * Посмотреть есть ли метод в API
+     * @param string $method метод
+     * @return true|false (1|0)
+     */
+    public function isMethod($method){
+        return method_exists($this, $method)?1:0;
+    }
+    /**
+     * Добавить пользователя в беседу
+     * @param int $chat_id беседа
+     * @param int $user_id пользователь
+     * @return mixed|null
+     */
+    public function addUser($chat_id,$user_id){
+        return $this->request('messages.addChatUser',array('chat_id'=>$chat_id,'user_id'=>$user_id),true);
+    }
+    /**
+     * Ссылка для добавления пользователя в беседу
+     * @param int $peer_id беседа
+     * @return mixed|null
+     */
+    public function inviteLink($chat_id,$reset = 1){
+            $request = $this->request('messages.getInviteLink',array('peer_id'=>$chat_id+2000000000,'reset'=>$reset));
+            $request['chat_id'] = $chat_id;
+            $request['reset'] = $reset;
+            return $request;
+    }
+    /**
      * Отправить сообщение пользователю
      * @param int $sendID Идентификатор получателя
      * @param string $message Сообщение
@@ -29,6 +57,16 @@ class vk_api{
             return true;
         
         }
+    }
+    /**
+     * Получить информацию об пользователя
+     * @param string $response_type тип данных для получения
+     * @param string $display Метод по получению токена
+     * @param string|int $fields Данные для пользователя в токене (Автоматом стоят все данные)
+     * @return string
+     */
+    public function getUser($user_id){
+            return $this->request('users.get',array('user_id'=>$user_id,'fields'=>$this->fields));
     }
     /**
      * Получить ссылку на получения токена пользователя
@@ -191,7 +229,7 @@ class vk_api{
      * @param array $params Параметры
      * @return mixed|null
      */
-    public function request($method,$params=array(),$is_user_token = false){
+    private function request($method,$params=array(),$is_user_token = false){
         $url = 'https://api.vk.com/method/'.$method;
         $params['access_token'] = $is_user_token==false?$this->token:$this->token_user;
         $params['v']=$this->v;
