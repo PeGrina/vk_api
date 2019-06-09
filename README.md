@@ -26,3 +26,5 @@ code :
    Blue
    White
  </pre>
+  Also, do not forget to put the method $vk->sendOK(); Which is end of file before ?>
+  Added new function isMethod($method); This function check $method in vk_api methods. Return true if this method be in vk_api, else false.
