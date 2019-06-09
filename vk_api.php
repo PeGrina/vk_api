@@ -4,6 +4,8 @@ class vk_api{
      * Токен
      * @var string
      */
+    private $iscurl = true;
+    private $headers = true;
     private $token = '';
     private $v = '';
     private $token_user = '';
@@ -23,6 +25,18 @@ class vk_api{
      */
     public function isMethod($method){
         return method_exists($this, $method)?1:0;
+    }
+    /**
+     * Тогглит curl
+     */
+    public function curl_toggle(){
+        $this->iscurl = !$this->iscurl;
+    }
+    /**
+     * Тогглит curl
+     */
+    public function fixOK(){
+        $this->headers = !$this->headers;
     }
     /**
      * Добавить пользователя в беседу
@@ -157,6 +171,7 @@ class vk_api{
 
     public function sendOK(){
         echo 'ok';
+        if($this->headers){
         $response_length = ob_get_length();
         // check if fastcgi_finish_request is callable
         if (is_callable('fastcgi_finish_request')) {
@@ -181,6 +196,7 @@ class vk_api{
         ob_end_flush();
         ob_flush();
         flush();
+        }
     }
 
     public function sendButton($sendID, $message, $gl_massiv = [], $one_time = False) {
@@ -233,7 +249,7 @@ class vk_api{
         $url = 'https://api.vk.com/method/'.$method;
         $params['access_token'] = $is_user_token==false?$this->token:$this->token_user;
         $params['v']=$this->v;
-        if (function_exists('curl_init')) {
+        if (function_exists('curl_init') && $this->iscurl==true) {
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_HTTPHEADER, array(
                 "Content-Type:multipart/form-data"
