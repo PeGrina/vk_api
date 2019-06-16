@@ -4,6 +4,10 @@ class vk_api{
      * Токен
      * @var string
      */
+     /**
+     * @package vk_api
+     * @version 1.2.0
+     */
     private $iscurl = true;
     private $headers = true;
     private $token = '';
@@ -69,7 +73,7 @@ class vk_api{
             return $this->request('messages.send',array('attachment'=>"doc". $id_owner . "_" . $id_doc,'user_id'=>$sendID));
         } else {
             return true;
-        
+
         }
     }
     /**
@@ -206,11 +210,36 @@ class vk_api{
             $j = 0;
             foreach ($button_str as $button) {
                 $color = $this->replaceColor($button[2]);
-                $buttons[$i][$j]["action"]["type"] = "text";
+                if(isset($button[3])){
+                  $buttons[$i][$j]["action"]["type"] = $button[3];
+                  if($button[3] == "open_app"){
+                    $app_object = $button[4];
+                    $appID = $app_object[0];
+                    $ownerID = $app_object[1];
+                    $hash = $app_object[2];
+                    $buttons[$i][$j]["action"]["app_id"] = $appID;
+                    if($ownerID != false){
+                      $buttons[$i][$j]["action"]["owner_id"] = $ownerID;
+                    }
+                    $buttons[$i][$j]["action"]["hash"] = $hash;
+                  }elseif($button[3] == "vkpay"){
+                    $app_object = $button[4];
+                    $hash = $app_object[0];
+                    $buttons[$i][$j]["action"]["hash"] = $hash;
+                  }
+                }else{
+                  $buttons[$i][$j]["action"]["type"] = "text";
+                }
                 if ($button[0] != null)
+                $types = ["open_app","location","vkpay"];
                     $buttons[$i][$j]["action"]["payload"] = json_encode($button[0], JSON_UNESCAPED_UNICODE);
-                $buttons[$i][$j]["action"]["label"] = $button[1];
-                $buttons[$i][$j]["color"] = $color;
+                if($button[3] != $types[1] && $button[3] != $types[2]){
+                  $buttons[$i][$j]["action"]["label"] = $button[1];
+                }
+
+                if($button[3] != $types[0] && $button[3] != $types[1] && $button[3] != $types[2]){
+                  $buttons[$i][$j]["color"] = $color;
+                }
                 $j++;
             }
             $i++;
